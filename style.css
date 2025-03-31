@@ -12,34 +12,75 @@ header {
     text-align: center;
 }
 
-.search {
-    margin: 1rem auto;
+header nav {
+    margin-top: 1rem;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 1rem;
+}
+
+main .banner {
+    max-height: 300px; 
+    overflow: hidden; 
+}
+
+main .banner img {
+    width: 100%;
+    display: block;
+    object-fit: cover; 
+    height: 100%; 
+}
+
+main .intro {
+    padding: 2rem;
     text-align: center;
 }
 
-input[type="text"] {
-    padding: 0.5rem;
-    width: 50%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.movies {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 1rem;
 }
 
-.movie {
+.card {
     background-color: #fff;
     padding: 1rem;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin: 1rem;
+    width: 300px;
 }
 
-.movie img {
+.card img {
     max-width: 100%;
     border-radius: 5px;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+footer .social a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 1rem;
+}
+
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 90%;
+    }
 }
