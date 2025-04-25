@@ -1,53 +1,95 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Cinema</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Cinema</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Meu Cinema</h1>
-        <nav>
-            <a href="#">Início</a>
-            <a href="#">Filmes</a>
-            <a href="#">Séries</a>
-            <a href="#">Contato</a>
-        </nav>
-    </header>
-    <main>
-        <div class="banner">
-            <img src="https://via.placeholder.com/1200x400" alt="Banner Principal">
-        </div>
-        <div class="intro">
-            <h2>Bem-vindo ao Meu Cinema</h2>
-            <p>Encontre os melhores filmes e séries aqui para chamar de seu! ;)</p>
-        </div>
-    </main>
+  <header>
+    <h1>Meu Cinema</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="#">Filmes</a>
+      <a href="#">Séries</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
+  <main>
+    <section class="destaques">
+      <h2>Itens em Destaque</h2>
+      <div class="carousel-container">
+        <div class="carousel-slide">
+          </div>
+        <button class="prev-button">Anterior</button>
+        <button class="next-button">Próximo</button>
+      </div>
+    </section>
     <section class="cards">
-        <div class="card">
-            <img src="https://via.placeholder.com/300x200" alt="Filme Ação">
-            <h3>Ação</h3>
-            <p>Filmes de ação emocionantes e cheios de adrenalina.</p>
-        </div>
-        <div class="card">
-            <img src="https://via.placeholder.com/300x200" alt="Filme Comédia">
-            <h3>Comédia</h3>
-            <p>Filmes de comédia para dar boas risadas.</p>
-        </div>
-        <div class="card">
-            <img src="https://via.placeholder.com/300x200" alt="Filme Drama">
-            <h3>Drama</h3>
-            <p>Filmes de drama com histórias emocionantes e profundas.</p>
+      <h2>Todos os Filmes</h2>
+      <div class="card-grid">
         </div>
     </section>
-    <footer>
-        <div class="social">
-            <a href="#">Facebook</a>
-            <a href="#">Twitter</a>
-            <a href="#">Instagram</a>
-        </div>
+  </main>
+  <footer>
+    <div class="social">
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">Instagram</a>
+    </div>
     <p>&copy; 2025 Meu Cinema</p>
-    </footer>
+  </footer>
+  <script src="app.js"></script>
+  <script>
+    const destaquesContainer = document.querySelector('.carousel-slide');
+    const todosFilmesContainer = document.querySelector('.card-grid');
+    const filmesDestaque = getFilmesDestaque();
+    const todosOsFilmes = getTodosFilmes();
+    let destaqueIndex = 0;
+
+    function mostrarDestaque() {
+      if (filmesDestaque.length > 0) {
+        const filme = filmesDestaque[destaqueIndex];
+        destaquesContainer.innerHTML = `
+          <div class="destaque-item">
+            <img src="${filme.imagem_principal}" alt="${filme.titulo}">
+            <h3>${filme.titulo}</h3>
+            <p>${filme.descricao}</p>
+            <a href="detalhes.html?id=${filme.id}">Ver Detalhes</a>
+          </div>
+        `;
+      } else {
+        destaquesContainer.innerHTML = '<p>Nenhum filme em destaque.</p>';
+      }
+    }
+
+    function mostrarTodosFilmes() {
+      todosOsFilmes.forEach(filme => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+          <img src="${filme.imagem_principal}" alt="${filme.titulo}">
+          <h3>${filme.titulo}</h3>
+          <p>${filme.genero}</p>
+          <a href="detalhes.html?id=${filme.id}">Ver Detalhes</a>
+        `;
+        todosFilmesContainer.appendChild(card);
+      });
+    }
+
+    document.querySelector('.next-button').addEventListener('click', () => {
+      destaqueIndex = (destaqueIndex + 1) % filmesDestaque.length;
+      mostrarDestaque();
+    });
+
+    document.querySelector('.prev-button').addEventListener('click', () => {
+      destaqueIndex = (destaqueIndex - 1 + filmesDestaque.length) % filmesDestaque.length;
+      mostrarDestaque();
+    });
+
+    mostrarDestaque();
+    mostrarTodosFilmes();
+  </script>
 </body>
 </html>
