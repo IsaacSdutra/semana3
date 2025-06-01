@@ -6,6 +6,7 @@
   <title>Detalhes do Filme</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Estilos existentes */
     .detalhe-container {
       display: flex;
       flex-direction: column;
@@ -20,6 +21,8 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       margin-bottom: 20px;
       text-align: center;
+      width: 100%; /* Adicionado para responsividade */
+      max-width: 800px; /* Limite máximo de largura */
     }
 
     .detalhe-geral img {
@@ -35,22 +38,44 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       text-align: center;
+      width: 100%; /* Adicionado para responsividade */
+      max-width: 800px; /* Limite máximo de largura */
     }
 
     .fotos-lista {
       display: flex;
       gap: 10px;
-      overflow-x: auto;
+      overflow-x: auto; /* Permite rolagem horizontal se houver muitas fotos */
       padding: 10px 0;
+      justify-content: center; /* Centraliza as fotos */
+      flex-wrap: wrap; /* Permite que as fotos quebrem a linha em telas menores */
     }
 
     .fotos-lista img {
       max-height: 100px;
+      width: auto; /* Garante que a imagem não distorça */
       border-radius: 5px;
+      object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
     }
 
     .foto-item {
       flex: 0 0 auto;
+      text-align: center;
+    }
+    .foto-item p {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* Media query para telas menores */
+    @media (max-width: 768px) {
+      .detalhe-geral, .detalhe-fotos {
+        padding: 15px;
+      }
+      .fotos-lista {
+        justify-content: flex-start; /* Alinha à esquerda para rolagem em mobile */
+      }
     }
   </style>
 </head>
@@ -61,6 +86,7 @@
       <a href="index.html">Início</a>
       <a href="#">Filmes</a>
       <a href="#">Séries</a>
+      <a href="cadastro_filmes.html">Cadastro de Filmes</a>
       <a href="#">Contato</a>
     </nav>
   </header>
@@ -85,43 +111,5 @@
     <p>&copy; 2025 Meu Cinema</p>
   </footer>
   <script src="app.js"></script>
-  <script>
-    const filmeDetalhesContainer = document.getElementById('filme-detalhes');
-    const filmeFotosContainer = document.getElementById('filme-fotos');
-    const urlParams = new URLSearchParams(window.location.search);
-    const filmeId = urlParams.get('id');
-    const filme = getFilmePorId(filmeId);
-
-    if (filme) {
-      filmeDetalhesContainer.innerHTML = `
-        <img src="${filme.imagem_principal}" alt="${filme.titulo}">
-        <h3>${filme.titulo}</h3>
-        <p><strong>Gênero:</strong> ${filme.genero}</p>
-        <p><strong>Diretor:</strong> ${filme.diretor}</p>
-        <p><strong>Atores:</strong> ${filme.atores.join(', ')}</p>
-        <p><strong>Ano:</strong> ${filme.ano}</p>
-        <p><strong>Descrição:</strong> ${filme.descricao}</p>
-      `;
-
-      if (filme.imagens_complementares && filme.imagens_complementares.length > 0) {
-        let fotosHTML = '<div class="fotos-lista">';
-        filme.imagens_complementares.forEach(foto => {
-          fotosHTML += `
-            <div class="foto-item">
-              <img src="${foto.src}" alt="${foto.descricao}">
-              <p>${foto.descricao}</p>
-            </div>
-          `;
-        });
-        fotosHTML += '</div>';
-        filmeFotosContainer.innerHTML = fotosHTML;
-      } else {
-        filmeFotosContainer.innerHTML = '<p>Não há fotos complementares para este filme.</p>';
-      }
-    } else {
-      filmeDetalhesContainer.innerHTML = '<p>Filme não encontrado.</p>';
-      filmeFotosContainer.innerHTML = '';
-    }
-  </script>
 </body>
 </html>

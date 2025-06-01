@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Filmes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Meu Cinema</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="#">Filmes</a>
+      <a href="#">Séries</a>
+      <a href="cadastro_filmes.html">Cadastro de Filmes</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
+  <main class="cadastro-container">
+    <section class="cadastro-form-section">
+      <h2>Cadastrar/Editar Filme</h2>
+      <form id="filme-form" class="filme-form">
+        <input type="hidden" id="filme-id">
+
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" required>
+
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" rows="4" required></textarea>
+
+        <label for="genero">Gênero:</label>
+        <input type="text" id="genero" required>
+
+        <label for="diretor">Diretor:</label>
+        <input type="text" id="diretor" required>
+
+        <label for="atores">Atores (separados por vírgula):</label>
+        <input type="text" id="atores" required>
+
+        <label for="ano">Ano:</label>
+        <input type="number" id="ano" required>
+
+        <label for="imagem_principal">URL da Imagem Principal:</label>
+        <input type="url" id="imagem_principal" required>
+
+        <label for="imagens_complementares">Imagens Complementares (JSON Array de objetos com 'id', 'src', 'descricao'):</label>
+        <textarea id="imagens_complementares" rows="6" placeholder='[{"id": 1, "src": "url_da_imagem", "descricao": "descrição"}]'></textarea>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="destaque">
+          <label for="destaque">Destaque</label>
+        </div>
+
+        <button type="submit" id="submit-button">Salvar Filme</button>
+        <button type="button" id="clear-form-button">Limpar Formulário</button>
+      </form>
+    </section>
+
+    <section class="cadastro-table-section">
+      <h2>Filmes Cadastrados</h2>
+      <div class="table-responsive">
+        <table id="filmes-table" class="filmes-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Gênero</th>
+              <th>Ano</th>
+              <th>Destaque</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            </tbody>
+        </table>
+      </div>
+      <div id="message-box" class="message-box hidden"></div>
+    </section>
+  </main>
+  <footer>
+    <div class="social">
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">Instagram</a>
+    </div>
+    <p>&copy; 2025 Meu Cinema</p>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
