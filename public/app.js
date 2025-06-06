@@ -1,20 +1,13 @@
-const urlBase = 'http://localhost:3000'; // URL base para o JSON Server
+const urlBase = 'http://localhost:3000';
 
-// --- Elementos DOM para index.html ---
 const destaquesContainer = document.querySelector('.carousel-slide');
 const todosFilmesContainer = document.querySelector('.card-grid');
 const prevButton = document.querySelector('.prev-button');
 const nextButton = document.querySelector('.next-button');
 
-let filmesDestaque = [];
-let todosOsFilmes = [];
-let destaqueIndex = 0;
-
-// --- Elementos DOM para detalhes.html ---
 const filmeDetalhesContainer = document.getElementById('filme-detalhes');
 const filmeFotosContainer = document.getElementById('filme-fotos');
 
-// --- Elementos DOM para cadastro_filmes.html ---
 const filmeForm = document.getElementById('filme-form');
 const filmeIdInput = document.getElementById('filme-id');
 const tituloInput = document.getElementById('titulo');
@@ -31,26 +24,19 @@ const submitButton = document.getElementById('submit-button');
 const clearFormButton = document.getElementById('clear-form-button');
 const messageBox = document.getElementById('message-box');
 
-/**
- * Exibe uma mensagem na caixa de mensagens.
- * @param {string} message - A mensagem a ser exibida.
- * @param {string} type - O tipo da mensagem ('success' ou 'error').
- */
+let filmesDestaque = [];
+let todosOsFilmes = [];
+let destaqueIndex = 0;
+
 function showMessage(message, type) {
   messageBox.textContent = message;
   messageBox.className = `message-box ${type}`;
   messageBox.classList.remove('hidden');
   setTimeout(() => {
     messageBox.classList.add('hidden');
-  }, 3000); // Esconde a mensagem após 3 segundos
+  }, 3000);
 }
 
-/**
- * Busca todos os filmes do JSON Server.
- * Popula as variáveis globais `todosOsFilmes` e `filmesDestaque`.
- * Se estiver na página inicial, exibe os destaques e todos os filmes.
- * Se estiver na página de cadastro, renderiza a tabela de filmes.
- */
 async function buscarFilmes() {
   try {
     const response = await fetch(`${urlBase}/filmes`);
@@ -61,20 +47,21 @@ async function buscarFilmes() {
     todosOsFilmes = data;
     filmesDestaque = data.filter(filme => filme.destaque);
 
-    // Lógica para a página index.html
     if (window.location.pathname.includes("index.html") || window.location.pathname === '/') {
       mostrarDestaque();
       mostrarTodosFilmes();
     }
 
-    // Lógica para a página cadastro_filmes.html
     if (window.location.pathname.includes("cadastro_filmes.html")) {
       renderFilmesTable();
     }
 
+    if (window.location.pathname.includes("estatisticas.html")) {
+      renderizarGraficoGeneros();
+    }
+
   } catch (error) {
     console.error('Erro ao buscar filmes:', error);
-    // Exibe mensagem de erro apropriada para cada página
     if (destaquesContainer && todosFilmesContainer) {
       destaquesContainer.innerHTML = `<div class="erro">Erro ao carregar filmes: ${error.message}</div>`;
       todosFilmesContainer.innerHTML = `<div class="erro">Erro ao carregar filmes: ${error.message}</div>`;
@@ -82,12 +69,15 @@ async function buscarFilmes() {
     if (filmesTableBody) {
       filmesTableBody.innerHTML = `<tr><td colspan="6" class="erro">Erro ao carregar filmes: ${error.message}</td></tr>`;
     }
+    if (document.getElementById('generosChart')) {
+        const chartContainer = document.querySelector('.grafico-container');
+        if (chartContainer) {
+            chartContainer.innerHTML = `<div class="erro">Erro ao carregar dados para o gráfico: ${error.message}</div>`;
+        }
+    }
   }
 }
 
-/**
- * Exibe o filme em destaque no carrossel da página inicial.
- */
 function mostrarDestaque() {
   if (destaquesContainer && filmesDestaque.length > 0) {
     const filme = filmesDestaque[destaqueIndex];
@@ -104,12 +94,9 @@ function mostrarDestaque() {
   }
 }
 
-/**
- * Exibe todos os filmes em cards na página inicial.
- */
 function mostrarTodosFilmes() {
   if (todosFilmesContainer) {
-    todosFilmesContainer.innerHTML = ''; // Limpa o conteúdo existente
+    todosFilmesContainer.innerHTML = '';
     todosOsFilmes.forEach(filme => {
       const card = document.createElement('div');
       card.classList.add('card');
@@ -124,16 +111,10 @@ function mostrarTodosFilmes() {
   }
 }
 
-/**
- * Obtém um filme pelo ID da lista de filmes carregada.
- * @param {number} id - O ID do filme.
- * @returns {object|undefined} O objeto do filme ou undefined se não encontrado.
- */
 function getFilmePorId(id) {
   return todosOsFilmes.find(filme => filme.id === parseInt(id));
 }
 
-// --- Event Listeners para index.html ---
 if (prevButton && nextButton) {
   prevButton.addEventListener('click', () => {
     destaqueIndex = (destaqueIndex - 1 + filmesDestaque.length) % filmesDestaque.length;
@@ -146,16 +127,10 @@ if (prevButton && nextButton) {
   });
 }
 
-
-// --- Lógica para detalhes.html ---
 if (window.location.pathname.includes("detalhes.html") && filmeDetalhesContainer && filmeFotosContainer) {
   const urlParams = new URLSearchParams(window.location.search);
   const filmeId = urlParams.get('id');
 
-  /**
-   * Busca e exibe os detalhes de um filme específico.
-   * @param {string} id - O ID do filme.
-   */
   async function buscarFilmeDetalhes(id) {
     try {
       const response = await fetch(`${urlBase}/filmes/${id}`);
@@ -204,16 +179,12 @@ if (window.location.pathname.includes("detalhes.html") && filmeDetalhesContainer
   buscarFilmeDetalhes(filmeId);
 }
 
-// --- Lógica para cadastro_filmes.html ---
 if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
 
-  /**
-   * Renderiza a tabela de filmes com os dados atuais.
-   */
   function renderFilmesTable() {
-    if (!filmesTableBody) return; // Garante que o elemento existe
+    if (!filmesTableBody) return;
 
-    filmesTableBody.innerHTML = ''; // Limpa a tabela antes de renderizar
+    filmesTableBody.innerHTML = '';
     todosOsFilmes.forEach(filme => {
       const row = filmesTableBody.insertRow();
       row.insertCell().textContent = filme.id;
@@ -237,9 +208,6 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     });
   }
 
-  /**
-   * Limpa o formulário de cadastro/edição.
-   */
   function clearForm() {
     filmeIdInput.value = '';
     tituloInput.value = '';
@@ -251,13 +219,9 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     imagemPrincipalInput.value = '';
     imagensComplementaresInput.value = '';
     destaqueInput.checked = false;
-    submitButton.textContent = 'Salvar Filme'; // Volta o texto do botão para "Salvar"
+    submitButton.textContent = 'Salvar Filme';
   }
 
-  /**
-   * Preenche o formulário com os dados de um filme para edição.
-   * @param {number} id - O ID do filme a ser editado.
-   */
   async function editFilme(id) {
     try {
       const response = await fetch(`${urlBase}/filmes/${id}`);
@@ -274,10 +238,9 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
       atoresInput.value = filme.atores.join(', ');
       anoInput.value = filme.ano;
       imagemPrincipalInput.value = filme.imagem_principal;
-      // Converte o array de objetos para uma string JSON formatada para o textarea
       imagensComplementaresInput.value = JSON.stringify(filme.imagens_complementares || [], null, 2);
       destaqueInput.checked = filme.destaque;
-      submitButton.textContent = 'Atualizar Filme'; // Muda o texto do botão para "Atualizar"
+      submitButton.textContent = 'Atualizar Filme';
       showMessage('Filme carregado para edição.', 'success');
     } catch (error) {
       console.error('Erro ao carregar filme para edição:', error);
@@ -285,10 +248,6 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     }
   }
 
-  /**
-   * Envia os dados do formulário para criar ou atualizar um filme.
-   * @param {Event} event - O evento de submissão do formulário.
-   */
   filmeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -302,12 +261,11 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     const imagem_principal = imagemPrincipalInput.value;
     let imagens_complementares = [];
     try {
-      // Tenta parsear o JSON das imagens complementares
       imagens_complementares = imagensComplementaresInput.value ? JSON.parse(imagensComplementaresInput.value) : [];
     } catch (e) {
       showMessage('Formato inválido para Imagens Complementares. Por favor, use um JSON array válido.', 'error');
       console.error('Erro ao parsear JSON de imagens complementares:', e);
-      return; // Impede a submissão se o JSON for inválido
+      return;
     }
     const destaque = destaqueInput.checked;
 
@@ -326,7 +284,6 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     try {
       let response;
       if (id) {
-        // Atualizar filme existente (PUT)
         response = await fetch(`${urlBase}/filmes/${id}`, {
           method: 'PUT',
           headers: {
@@ -339,34 +296,28 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
         }
         showMessage('Filme atualizado com sucesso!', 'success');
       } else {
-        // Criar novo filme (POST)
         response = await fetch(`${urlBase}/filmes`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(filmeData)
+            body: JSON.stringify(filmeData)
         });
         if (!response.ok) {
           throw new Error(`Erro ao cadastrar filme: ${response.status}`);
         }
         showMessage('Filme cadastrado com sucesso!', 'success');
       }
-      clearForm(); // Limpa o formulário após sucesso
-      buscarFilmes(); // Recarrega a lista de filmes
+      clearForm();
+      buscarFilmes();
     } catch (error) {
       console.error('Erro ao salvar filme:', error);
       showMessage(`Erro ao salvar filme: ${error.message}`, 'error');
     }
   });
 
-  /**
-   * Exclui um filme.
-   * @param {number} id - O ID do filme a ser excluído.
-   */
   async function deleteFilme(id) {
-    // Substitui window.confirm por um modal simples ou mensagem de confirmação
-    const confirmDelete = true; // Por simplicidade, assumimos true. Em um app real, use um modal.
+    const confirmDelete = true;
     if (confirmDelete) {
       try {
         const response = await fetch(`${urlBase}/filmes/${id}`, {
@@ -376,7 +327,7 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
           throw new Error(`Erro ao excluir filme: ${response.status}`);
         }
         showMessage('Filme excluído com sucesso!', 'success');
-        buscarFilmes(); // Recarrega a lista de filmes
+        buscarFilmes();
       } catch (error) {
         console.error('Erro ao excluir filme:', error);
         showMessage(`Erro ao excluir filme: ${error.message}`, 'error');
@@ -384,14 +335,83 @@ if (window.location.pathname.includes("cadastro_filmes.html") && filmeForm) {
     }
   }
 
-  // Event listener para o botão "Limpar Formulário"
   clearFormButton.addEventListener('click', clearForm);
 
-  // Garante que a tabela é renderizada quando a página de cadastro é carregada
   buscarFilmes();
 }
 
-// Carrega os filmes do servidor JSON ao carregar qualquer página
-// Isso é importante para que todosOsFilmes e filmesDestaque estejam disponíveis
-// para todas as páginas que os utilizam.
-buscarFilmes();
+if (window.location.pathname.includes("estatisticas.html")) {
+    function renderizarGraficoGeneros() {
+        const generosCount = {};
+        todosOsFilmes.forEach(filme => {
+            // Verifique se filme.genero existe e é uma string antes de processar
+            if (filme.genero && typeof filme.genero === 'string') {
+                const generos = filme.genero.split(',').map(g => g.trim());
+                generos.forEach(genero => {
+                    if (genero) {
+                        generosCount[genero] = (generosCount[genero] || 0) + 1;
+                    }
+                });
+            }
+        });
+
+        const labels = Object.keys(generosCount);
+        const data = Object.values(generosCount);
+
+        const ctx = document.getElementById('generosChart');
+        if (ctx) {
+            if (window.myPieChart instanceof Chart) {
+                window.myPieChart.destroy();
+            }
+            window.myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9900',
+                            '#C9CBCE'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribuição de Filmes por Gênero',
+                            font: {
+                                size: 18
+                            },
+                            color: '#333'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + ' filmes (' + (context.parsed / data.reduce((a, b) => a + b, 0) * 100).toFixed(2) + '%)';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    buscarFilmes();
+} else {
+    buscarFilmes();
+}
