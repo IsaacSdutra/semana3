@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meu Cinema</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
@@ -13,8 +14,10 @@
       <a href="index.html">Início</a>
       <a href="#">Filmes</a>
       <a href="#">Séries</a>
-      <a href="cadastro_filmes.html">Cadastro de Filmes</a>
-      <a href="estatisticas.html">Estatísticas</a>
+      <a href="cadastro_filmes.html" id="cadastro-filmes-link" style="display: none;">Cadastro de Filmes</a>
+      <a href="estatisticas.html" id="estatisticas-link" style="display: none;">Estatísticas</a>
+      <a href="favoritos.html" id="favoritos-link" style="display: none;">Meus Favoritos</a>
+      <a href="login.html" id="auth-link">Login</a>
       <a href="#">Contato</a>
     </nav>
   </header>
@@ -30,7 +33,25 @@
     </section>
     <section class="cards">
       <h2>Todos os Filmes</h2>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Pesquisar por título ou descrição...">
+        <button id="search-button">Pesquisar</button>
+      </div>
       <div class="card-grid">
+      </div>
+    </section>
+    <section class="info-autor">
+      <h2>Informações do Autor</h2>
+      <div class="autor-card">
+        <h3>Isaac Santos Dutra</h3>
+        <p>Estudante de 18 anos. Buscando sempre aprender e inovar.</p>
+        <p>Curso: Sistemas de Informação</p>
+        <p>Turma: Sistemas de Informação - CAMPUS BETIM - PBE - NOITE</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/isaac_sdutra/?next=%2F" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/in/isaac-dutra-ti" target="_blank"><i class="fab fa-linkedin"></i></a>
+          <a href="https://github.com/IsaacSdutra" target="_blank"><i class="fab fa-github"></i></a>
+        </div>
       </div>
     </section>
   </main>
